@@ -21,5 +21,7 @@ public final class PriceCalculator {
     public Price getResult() {
         throw new UnsupportedOperationException();
     }
+
+    // test commit
 }
 
