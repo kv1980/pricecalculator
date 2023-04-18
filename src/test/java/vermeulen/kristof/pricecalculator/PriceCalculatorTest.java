@@ -55,20 +55,14 @@ class PriceCalculatorTest {
         class testSum {
             @Test
             void whenPriceAndCurrencyAreCorrect() {
-                List<Price> prices = new ArrayList<Price>();
-                prices.add(price_100);
-                prices.add(price_200);
-                prices.add(price_300);
+                List<Price> prices = getValidPriceList();
                 var calculatedPrice = priceCalculator.sum(prices).getResult();
                 assertEquals(new BigDecimal(600).setScale(Currency.getInstance(currency_EUR).getDefaultFractionDigits(), RoundingMode.HALF_UP), calculatedPrice.getValue());
             }
 
             @Test
             void whenMultipleCurrencies() {
-                List<Price> prices = new ArrayList<Price>();
-                prices.add(price_100);
-                prices.add(price_100_USD);
-
+                List<Price> prices = getInvalidPriceList();
                 assertThrows(PriceException.class, () -> priceCalculator.sum(prices));
             }
         }
@@ -77,13 +71,25 @@ class PriceCalculatorTest {
         class testSubstractPercentage{
             @Test
             void whenPriceAndPercentageAreCorrect(){
-                List<Price> prices = new ArrayList<Price>();
-                prices.add(price_100);
-                prices.add(price_200);
-                prices.add(price_300);
+                List<Price> prices = getValidPriceList();
                 var calculatedPrice = priceCalculator.sum(prices).substractPercentage(10).getResult();
                 assertEquals(new BigDecimal(540).setScale(Currency.getInstance(currency_EUR).getDefaultFractionDigits(), RoundingMode.HALF_UP), calculatedPrice.getValue());
             }
+        }
+
+        private List<Price> getValidPriceList(){
+            List<Price> prices = new ArrayList<Price>();
+            prices.add(price_100);
+            prices.add(price_200);
+            prices.add(price_300);
+            return prices;
+        }
+
+        private List<Price> getInvalidPriceList(){
+            List<Price> prices = new ArrayList<Price>();
+            prices.add(price_100);
+            prices.add(price_100_USD);
+            return prices;
         }
 
     }
