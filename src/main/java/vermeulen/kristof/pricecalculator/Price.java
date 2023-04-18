@@ -18,7 +18,6 @@ public class Price {
         try {
             BigDecimal validValue = requireValidValue(value);
             Currency validCurrency = Currency.getInstance(currencyCode);
-            System.out.println("hellokes");
 
             return new Price(validValue, validCurrency);
         } catch (Exception exception) {
