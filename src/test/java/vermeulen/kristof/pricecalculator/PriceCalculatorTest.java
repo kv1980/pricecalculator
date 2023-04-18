@@ -41,59 +41,59 @@ class PriceCalculatorTest {
 
 
     @Nested
-    class of {
-        @Nested
-        class testMultiply {
-            @Test
-            void whenPriceAndQuantityAreCorrect(){
-                var calculatedPrice = priceCalculator.multiply(price_100, quantity).getResult();
-                assertEquals(new BigDecimal(250).setScale(Currency.getInstance(currency_EUR).getDefaultFractionDigits(), RoundingMode.HALF_UP), calculatedPrice.getValue());
-            }
+    class testMultiply {
+        @Test
+        void whenPriceAndQuantityAreCorrect(){
+            var calculatedPrice = priceCalculator.multiply(price_100, quantity).getResult();
+            assertEquals(new BigDecimal(250).setScale(Currency.getInstance(currency_EUR).getDefaultFractionDigits(), RoundingMode.HALF_UP), calculatedPrice.getValue());
         }
-
-        @Nested
-        class testSum {
-            @Test
-            void whenPriceAndCurrencyAreCorrect() {
-                List<Price> prices = getValidPriceList();
-                var calculatedPrice = priceCalculator.sum(prices).getResult();
-                assertEquals(new BigDecimal(600).setScale(Currency.getInstance(currency_EUR).getDefaultFractionDigits(), RoundingMode.HALF_UP), calculatedPrice.getValue());
-            }
-
-            @Test
-            void whenMultipleCurrencies() {
-                List<Price> prices = getInvalidPriceList();
-                assertThrows(PriceException.class, () -> priceCalculator.sum(prices));
-            }
-        }
-
-        @Nested
-        class testSubstractPercentage{
-            @Test
-            void whenPriceAndPercentageAreCorrect(){
-                List<Price> prices = getValidPriceList();
-                var calculatedPrice = priceCalculator.sum(prices).substractPercentage(10).getResult();
-                assertEquals(new BigDecimal(540).setScale(Currency.getInstance(currency_EUR).getDefaultFractionDigits(), RoundingMode.HALF_UP), calculatedPrice.getValue());
-            }
-        }
-
-        private List<Price> getValidPriceList(){
-            List<Price> prices = new ArrayList<Price>();
-            prices.add(price_100);
-            prices.add(price_200);
-            prices.add(price_300);
-            return prices;
-        }
-
-        private List<Price> getInvalidPriceList(){
-            List<Price> prices = new ArrayList<Price>();
-            prices.add(price_100);
-            prices.add(price_100_USD);
-            return prices;
-        }
-
     }
 
+    @Nested
+    class testSum {
+        @Test
+        void whenPriceAndCurrencyAreCorrect() {
+            List<Price> prices = getValidPriceList();
+            var calculatedPrice = priceCalculator.sum(prices).getResult();
+            assertEquals(new BigDecimal(600).setScale(Currency.getInstance(currency_EUR).getDefaultFractionDigits(), RoundingMode.HALF_UP), calculatedPrice.getValue());
+        }
 
+        @Test
+        void errorWhenMultipleCurrencies() {
+            List<Price> prices = getInvalidPriceList();
+            assertThrows(PriceException.class, () -> priceCalculator.sum(prices));
+        }
+    }
+
+    @Nested
+    class testSubstractPercentage{
+        @Test
+        void whenPriceAndPercentageAreCorrect(){
+            List<Price> prices = getValidPriceList();
+            var calculatedPrice = priceCalculator.sum(prices).substractPercentage(10).getResult();
+            assertEquals(new BigDecimal(540).setScale(Currency.getInstance(currency_EUR).getDefaultFractionDigits(), RoundingMode.HALF_UP), calculatedPrice.getValue());
+        }
+
+        @Test
+        void errorWhenNoPriorCalculation() {
+            // priceCalculator.value must be a valid object before you can call substractPercentage
+            assertThrows(PriceException.class, () -> priceCalculator.substractPercentage(10));
+        }
+    }
+
+    private List<Price> getValidPriceList(){
+        List<Price> prices = new ArrayList<Price>();
+        prices.add(price_100);
+        prices.add(price_200);
+        prices.add(price_300);
+        return prices;
+    }
+
+    private List<Price> getInvalidPriceList(){
+        List<Price> prices = new ArrayList<Price>();
+        prices.add(price_100);
+        prices.add(price_100_USD);
+        return prices;
+    }
 
 }
