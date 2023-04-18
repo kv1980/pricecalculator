@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PriceCalculatorTest {
@@ -20,6 +22,7 @@ class PriceCalculatorTest {
     private static Price price_100;
     private static Price price_200;
     private static Price price_300;
+    private static Price price_100_USD;
     private static float quantity;
 
     @BeforeAll
@@ -27,6 +30,7 @@ class PriceCalculatorTest {
         price_100 = Price.of(100, currency_EUR);
         price_200 = Price.of(200, currency_EUR);
         price_300 = Price.of(300, currency_EUR);
+        price_100_USD = Price.of(100, "USD");
         quantity = 2.5F;
     }
 
@@ -50,13 +54,22 @@ class PriceCalculatorTest {
         @Nested
         class testSum {
             @Test
-            void whenPriceAndCurrencyAreCorrect(){
+            void whenPriceAndCurrencyAreCorrect() {
                 List<Price> prices = new ArrayList<Price>();
                 prices.add(price_100);
                 prices.add(price_200);
                 prices.add(price_300);
                 var calculatedPrice = priceCalculator.sum(prices).getResult();
                 assertEquals(new BigDecimal(600).setScale(Currency.getInstance(currency_EUR).getDefaultFractionDigits(), RoundingMode.HALF_UP), calculatedPrice.getValue());
+            }
+
+            @Test
+            void whenMultipleCurrencies() {
+                List<Price> prices = new ArrayList<Price>();
+                prices.add(price_100);
+                prices.add(price_100_USD);
+
+                assertThrows(PriceException.class, () -> priceCalculator.sum(prices));
             }
         }
 

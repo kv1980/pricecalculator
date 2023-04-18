@@ -2,6 +2,7 @@ package vermeulen.kristof.pricecalculator;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 public final class PriceCalculator {
 
@@ -18,6 +19,9 @@ public final class PriceCalculator {
 
         String currencyCode = prices.get(0).getCurrency().getCurrencyCode();
         for (Price price : prices) {
+            if (Objects.equals(currencyCode, ((Price) price).getCurrency().getCurrencyCode()) != true) {
+                throw new PriceException(new IllegalArgumentException("It's not possible to combine multiple currencies"));
+            }
             sumValue = sumValue.add(((Price) price).getValue());
         }
         result = Price.of(sumValue.doubleValue(), currencyCode);
