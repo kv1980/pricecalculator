@@ -4,6 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class PriceCalculatorTest {
@@ -26,7 +29,7 @@ class PriceCalculatorTest {
             @Test
             void whenPriceAndQuantityAreCorrect(){
                 var priceResult = priceCalculator.multiply(price, quantity).getResult();
-                assertEquals(250, priceResult.getValue());
+                assertEquals(new BigDecimal(250).setScale(price.getCurrency().getDefaultFractionDigits(), RoundingMode.HALF_UP), priceResult.getValue());
             }
         }
 
