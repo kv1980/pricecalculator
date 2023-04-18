@@ -25,7 +25,10 @@ public final class PriceCalculator {
     }
 
     public PriceCalculator substractPercentage(int percentage) {
-        throw new UnsupportedOperationException();
+        double multiplier = (100 - percentage) / 100.0;
+        BigDecimal newValue = result.getValue().multiply(BigDecimal.valueOf(multiplier));
+        result = Price.of(newValue.doubleValue(), result.getCurrency().getCurrencyCode());
+        return this;
     }
 
     public Price getResult() {
