@@ -14,7 +14,14 @@ public final class PriceCalculator {
     }
 
     public PriceCalculator sum(List<Price> prices) {
-        throw new UnsupportedOperationException();
+        BigDecimal sumValue = BigDecimal.valueOf(0);
+
+        String currencyCode = prices.get(0).getCurrency().getCurrencyCode();
+        for (Price price : prices) {
+            sumValue = sumValue.add(((Price) price).getValue());
+        }
+        result = Price.of(sumValue.doubleValue(), currencyCode);
+        return this;
     }
 
     public PriceCalculator substractPercentage(int percentage) {
